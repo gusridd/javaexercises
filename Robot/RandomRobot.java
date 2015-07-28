@@ -8,6 +8,7 @@ public class RandomRobot implements IRobot {
 
   public RandomRobot(){
     this(0.5);
+    //this = new RandomRobot(0.5);
   }
 
   public RandomRobot(double p){
