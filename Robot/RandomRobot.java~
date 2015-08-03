@@ -7,7 +7,8 @@ public class RandomRobot implements IRobot {
   private double p;
 
   public RandomRobot(){
-    this(0.5);
+    //this(0.5);
+    this = new RandomRobot(0.5);
   }
 
   public RandomRobot(double p){
@@ -18,7 +19,7 @@ public class RandomRobot implements IRobot {
 
   public boolean move(){
     double c = r.nextDouble();
-    boolean res = c < p;
+    boolean res = c <= p;
     System.out.println("InternalPos: " + getPos());
     if(res) {
       pos++;

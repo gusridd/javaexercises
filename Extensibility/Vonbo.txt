@@ -1,0 +1,13 @@
+=========
+Vonbo.txt
+=========
+
+He took a lot of time making the design of the algorithm.
+
+It seems that he will iterate.
+
+He changed its representation of numbers in the middle.
+
+Errors:
+
+The matrix representation is in decimal, not binary
