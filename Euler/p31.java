@@ -97,6 +97,7 @@ public class p31 {
 				}
 			}
 		}
+		System.out.println(java.util.Arrays.toString(res));
 		return res[objectValue];
 	}
 }
