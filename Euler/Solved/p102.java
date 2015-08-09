@@ -22,7 +22,7 @@ class p102 {
 		 	p1 = new Point(x1,y1);
 		 	p2 = new Point(x2,y2);
 		 	p3 = new Point(x3,y3);
-		 	System.out.println("x1: " + x1 + " y1: " + y1);
+		 	// System.out.println("x1: " + x1 + " y1: " + y1);
 		 	double alpha = ((p2.y - p3.y)*(p.x - p3.x) + (p3.x - p2.x)*(p.y - p3.y)) /
         		((p2.y - p3.y)*(p1.x - p3.x) + (p3.x - p2.x)*(p1.y - p3.y));
 			double beta = ((p3.y - p1.y)*(p.x - p3.x) + (p1.x - p3.x)*(p.y - p3.y)) /
