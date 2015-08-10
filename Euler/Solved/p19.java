@@ -22,23 +22,23 @@ class p19{
 	static public void main(String args[]){
 		GregorianCalendar cal = new GregorianCalendar(1901, Calendar.JANUARY, 1);
 
-		System.out.println("DATE: " + cal.get(Calendar.DATE));
- 		System.out.println("DAY_OF_MONTH: " + cal.get(Calendar.DAY_OF_MONTH));
-		System.out.println("DAY_OF_YEAR: " + cal.get(Calendar.DAY_OF_YEAR));
- 		System.out.println("DAY_OF_WEEK: " + cal.get(Calendar.DAY_OF_WEEK));
-	 	System.out.println("DAY_OF_WEEK_IN_MONTH: "
-	                    + cal.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+		// System.out.println("DATE: " + cal.get(Calendar.DATE));
+ 	// 	System.out.println("DAY_OF_MONTH: " + cal.get(Calendar.DAY_OF_MONTH));
+		// System.out.println("DAY_OF_YEAR: " + cal.get(Calendar.DAY_OF_YEAR));
+ 	// 	System.out.println("DAY_OF_WEEK: " + cal.get(Calendar.DAY_OF_WEEK));
+	 // 	System.out.println("DAY_OF_WEEK_IN_MONTH: "
+	 //                    + cal.get(Calendar.DAY_OF_WEEK_IN_MONTH));
 
 	 	int sundays = 0;
 	 	while(cal.get(Calendar.YEAR) <= 2000 
 	 		  && cal.get(Calendar.MONTH) <= Calendar.DECEMBER 
 	 		  && cal.get(Calendar.DAY_OF_MONTH) <= 31){
-	 		System.out.print(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR));
+	 		// System.out.print(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR));
 	 		if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && cal.get(Calendar.DAY_OF_MONTH) == 1){
-	 			System.out.println(" SUNDAY");
+	 			// System.out.println(" SUNDAY");
 	 			sundays++;
 	 		} else {
-	 			System.out.println("");
+	 			// System.out.println("");
 	 		}
 	 		cal.add(Calendar.DAY_OF_YEAR,1);
 	 	}
