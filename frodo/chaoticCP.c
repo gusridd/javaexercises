@@ -169,6 +169,7 @@ int poisson(float beta) {
       return i;
     i++;
     factorial = factorial * i;
+    //printf("beta: %f factorial: %d, cum: %f\n",beta,factorial,cum);
     cum = cum + exp(-beta)*pow(beta,i)/factorial;
   }
 }			
