@@ -13,26 +13,31 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.awt.geom.Line2D;
+
+import java.util.ArrayList;
 
 public class Chaos {
 
 
 	static public void main(String []args) throws FileNotFoundException{
-		//JFrame frame = new JFrame("FrameDemo");
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//JLabel emptyLabel = new JLabel("Empty");
-		//frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
-		//frame.pack();
-		//frame.setVisible(true);
 
-		Calc c = new Calc();
+		final Calc c = new Calc();
 		//c.GO();
-
 		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new JavaUI().setVisible(true);
-            }
-        });
+			public void run() {
+				JavaUI ui = new JavaUI();
+				ui.setVisible(true);
+				c.setUI(ui);
+				try{
+					c.GO();
+				} catch (Exception e){
+					System.err.println(e.toString());
+					e.printStackTrace();
+				}
+
+			}
+		});
 	}
 }
 
@@ -48,10 +53,10 @@ class JavaUI extends JFrame {
 
 	private void initComponents() {
         // we want a custom Panel2, not a generic JPanel!
-        drawPanel = new DrawPanel();
+		drawPanel = new DrawPanel();
 
-        drawPanel.setBackground(new java.awt.Color(255, 255, 255));
-        drawPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		drawPanel.setBackground(new java.awt.Color(255, 255, 255));
+		drawPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         // drawPanel.addMouseListener(new MouseAdapter() {
         //     public void mousePressed(MouseEvent evt) {
         //         drawPanelMousePressed(evt);
@@ -67,52 +72,90 @@ class JavaUI extends JFrame {
         // });
 
         // add the component to the frame to see it!
-        this.setContentPane(drawPanel);
+		this.setContentPane(drawPanel);
         // be nice to testers..
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pack();
     }// </editor-fold>
 
 
 
-	class DrawPanel extends JPanel {
+    class DrawPanel extends JPanel {
 
-		int i = 20;
+    	private char[] config;
+    	private int square = 1;
+    	private int N = 0;
 
-        DrawPanel() {
+    	DrawPanel() {
             // set a preferred size for the custom panel.
-            setPreferredSize(new Dimension(420,420));
-        }
+    		setPreferredSize(new Dimension(400,400));
+    	}
 
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawString("BLAH", i, 20);
-            i++;
-            g.drawRect(200, 200, 200, 200);
-        }
-        @Override
-        public void paint(Graphics g){
-        	super.paint(g);
-        	//g.drawString("BLAH", i, 20);
-            i++;
-        }
+    	@Override
+    	public void paintComponent(Graphics g) {
+    		super.paintComponent(g);
+    		//g.drawString("BLAH", i, 20);
+    		//i++;
+    		//g.drawRect(200, 200, 200, 200);
+    	}
+    	@Override
+    	public void paint(Graphics g){
+    		super.paint(g);
+    		//g.drawString("BLAHO", i++, 20);
+    		//i++;
+    		for(int x = 0; x < N; x++){
+    			for(int y = 0; y < N; y++){
+    				int cr = config[3*((square*x)+square*(square*y)*N)+0];
+    				int cg = config[3*((square*x)+square*(square*y)*N)+1];
+    				int cb = config[3*((square*x)+square*(square*y)*N)+2];
+    				if(cr == 255 && cg == 255 && cb == 255){
+    					g.setColor(Color.WHITE);
+    				} else {
+    					g.setColor(Color.GREEN);
+    				}
+    				//System.out.println("rgb(" + cr + ", " + cg + ", "+cb + ")");
+    				//g.setColor(new Color(cr,cg,cb));
+    				g.drawLine(x, y, x, y);
+    			}
+    		}
+
+    	}
+
+    	public void setConfig(char[] nConfig){
+    		this.config = nConfig;
+    	}
+
+    	public void setN(int nN){
+    		this.N = nN;
+    	}
+    }
+
+    public void setConfig(char[] nConfig){
+    	this.drawPanel.setConfig(nConfig);
+    }
+
+    public void setN(int nN){
+    	this.drawPanel.setN(nN);
     }
 }
 
 class Calc {
 
 	File ofp;
-	PrintStream printStream;
+	//PrintStream printStream;
 	Random rnd;
-	JavaUI ui;
+	private JavaUI ui;
 
 	public Calc() throws FileNotFoundException{
-		ofp = new File("evcv.csv");
-		printStream = new PrintStream(ofp);
+		//ofp = new File("evcv.csv");
+		//printStream = new PrintStream(ofp);
 	}
 
-	final static private int N = 20;
+	public void setUI(JavaUI ui){
+		this.ui = ui;
+	}
+
+	final static private int N = 100;
 	final static private int T = 750000;
 	final static private int square = 1;
 	final static private int P = 1;
@@ -139,7 +182,7 @@ class Calc {
 	int display;
 	int display2;
 	int display3;
-	double alea;
+	//double alea;
 	double runtime;
 	int ones = 0;
 
@@ -180,24 +223,15 @@ class Calc {
 
 	}
 
-	// void killCluster(int site) {
-	// 	eta[site] = 0;
-	// 	ones--;
-	// 	int neigh, i;
-	// 	for (i = 0; i < (2*range_ep+1)*(2*range_ep+1); i++) {
-	// 		neigh = detNeighbor(site,i,range_ep);
-	// 		if (eta[neigh]== 1)
-	// 			killCluster(neigh);
-	// 	}
-	// 	return;
-	// }
+	ArrayList<Integer> l = new ArrayList<Integer>(3*square*square*N*N);
 
 	void killCluster(int site) {
 		int neigh, i;
-		LinkedList<Integer> l = new LinkedList<Integer>();
 		l.add(site);
 		while(!l.isEmpty()){
-			site = l.poll();
+			//site = l.poll();
+			site = l.get(0);
+			l.remove(0);
 			for (i = 0; i < (2*range_ep+1)*(2*range_ep+1); i++) {
 				neigh = detNeighbor(site,i,range_ep);
 				if(eta[neigh]== 1){
@@ -211,7 +245,7 @@ class Calc {
 	int poisson(double beta) {
 		int i = 0;
 		int factorial = 1;
-		alea = rnd();
+		double alea = rnd();
 		double cum = Math.exp(-beta);
 		while (true) {
 			if (alea < cum)
@@ -222,7 +256,7 @@ class Calc {
 		}
 	}
 
-	void GO(){
+	void GO() throws Exception{
 		//ofp = fopen(ofile, "w");
 		STAR = true;
 		DRAW = true;
@@ -233,11 +267,11 @@ class Calc {
 		process();
 	}
 
-	void process () {
+	void process() throws Exception {
 
 		long beginning = System.nanoTime();
 		//time(&beginning);
-
+		Graphics g = this.ui.getGraphics();
 		rnd = new Random(beginning);
 		//srand(beginning);
 
@@ -248,7 +282,7 @@ class Calc {
 			for (site = 0; site < N*N; site ++) {  
 				eta [site] = 0;
 				etaNew[site] = 0;
-				alea = rnd();
+				double alea = rnd();
 				if (alea < rho) {
 					eta[site]++;
 					ones++;
@@ -264,11 +298,12 @@ class Calc {
 		clock2 = System.nanoTime();
 		double tContact = 0;
 		double tEpidemic = 0;
+		int i,j,children,neigh;
 
 		while (DRAW == true && runtime <= T) {
 
 			//System.out.println(Arrays.toString(config));
-			printStream.println(Arrays.toString(config));
+			//printStream.println(Arrays.toString(config));
 
 			display++;
 			display3++;
@@ -278,7 +313,7 @@ class Calc {
 			if (withClock)
 				clock1 = System.nanoTime();
 
-			int i,j,children,neigh;
+			
 
 			for (site = 0; site < N*N; site++) {
 				if (eta[site] == 1) {
@@ -302,7 +337,10 @@ class Calc {
 			}
 
 			//memcpy(eta,etaNew);
-			eta = Arrays.copyOf(etaNew,etaNew.length);
+			for(int h = 0; h<eta.length; h++){
+				eta[h] = etaNew[h];
+			}
+			//eta = Arrays.copyOf(etaNew,etaNew.length);
 
 			for (site = 0; site < N*N; site++) {
 				etaNew[site] = 0;
@@ -320,7 +358,7 @@ class Calc {
 			runtime++;
 
 			if (display3 == P3) {
-				printStream.printf("%f,%f\n",runtime,((double)ones)/((double)N*N));
+				//printStream.printf("%f,%f\n",runtime,((double)ones)/((double)N*N));
 				//System.out.printf(ofp,"%f,%f\n",runtime,((double)ones)/((double)N*N));
 				display3 = 0;
 			}
@@ -360,7 +398,14 @@ class Calc {
 						System.out.printf("1's = %f     runtime = %f\n",((double)ones)/((double)N*N),runtime);	
 					display2 = 0;
 				}
+				
+				if(g == null){
+					throw new Exception("Null reference to graphics");
+				}
 
+				this.ui.setN(N);
+				this.ui.setConfig(config);
+				this.ui.paint(g);
 				//draw_config();
 				//while (gtk_events_pending ()) gtk_main_iteration ();
 

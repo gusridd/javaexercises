@@ -68,35 +68,35 @@ int ones = 0;
 
 void
 on_range_spnbtn_value_changed           (GtkSpinButton   *spinbutton,
-					 gpointer         user_data)
+  gpointer         user_data)
 {
   range = gtk_spin_button_get_value(spinbutton);
 }
 
 void
 on_range_ep_spnbtn_value_changed           (GtkSpinButton   *spinbutton,
-					 gpointer         user_data)
+  gpointer         user_data)
 {
   range_ep = gtk_spin_button_get_value(spinbutton);
 }
 
 void
 on_rho_spnbtn_value_changed           (GtkSpinButton   *spinbutton,
-                                        gpointer         user_data)
+  gpointer         user_data)
 {
   rho = gtk_spin_button_get_value(spinbutton);
 }
 
 void
 on_beta_spnbtn_value_changed           (GtkSpinButton   *spinbutton,
-				     gpointer         user_data)
+ gpointer         user_data)
 {
   beta = gtk_spin_button_get_value(spinbutton);
 }
 
 void
 on_epsilon_spnbtn_value_changed           (GtkSpinButton   *spinbutton,
-				     gpointer         user_data)
+ gpointer         user_data)
 {
   epsilon = gtk_spin_button_get_value(spinbutton);
 }
@@ -181,7 +181,7 @@ void process () {
   srand(beginning);
 
   int nNeigh = (2*range+1)*(2*range+1); 
-    
+  
   if (STAR == TRUE) {
     ones = 0;
     for (site = 0; site < N*N; site ++) {  
@@ -189,121 +189,121 @@ void process () {
       etaNew[site] = 0;
       alea = rnd();
       if (alea < rho) {
-	eta[site]++;
-	ones++;
-      }
-    }
-  }
+       eta[site]++;
+       ones++;
+     }
+   }
+ }
 
   /* Used to measure how long it takes to run each part of the simulation. */
   /* Ignored when withClock = FALSE */
-  gboolean withClock = FALSE;
-  clock_t clock1, clock2;
-  double tContact = 0;
-  double tEpidemic = 0;
+ gboolean withClock = FALSE;
+ clock_t clock1, clock2;
+ double tContact = 0;
+ double tEpidemic = 0;
 
-  while (DRAW == TRUE && runtime <= T) {
+ while (DRAW == TRUE && runtime <= T) {
 
-    display++;
-    display3++;
+  display++;
+  display3++;
 
-    ones = 0;
+  ones = 0;
 
-    if (withClock)
-      clock1 = clock();
+  if (withClock)
+    clock1 = clock();
 
-    int i,j,children,neigh;
+  int i,j,children,neigh;
 
-    for (site = 0; site < N*N; site++) {
-      if (eta[site] == 1) {
-        children = poisson(beta);
-	for (i = 1; i <= children; i++) {
-	  j = floor(rnd()*nNeigh);
-	  neigh = detNeighbor(site,j,range);
-	  if (etaNew[neigh] == 0) {
-	    etaNew[neigh] = 1;
-	    ones++;
-	  }
-	}
-      }
-    }
-    
-    if (withClock) {
-      clock2 = clock();
-      tContact = tContact+((double)(clock2-clock1))/CLOCKS_PER_SEC;
-      clock1=clock2;
-    }
+  for (site = 0; site < N*N; site++) {
+    if (eta[site] == 1) {
+      children = poisson(beta);
+      for (i = 1; i <= children; i++) {
+       j = floor(rnd()*nNeigh);
+       neigh = detNeighbor(site,j,range);
+       if (etaNew[neigh] == 0) {
+         etaNew[neigh] = 1;
+         ones++;
+       }
+     }
+   }
+ }
+ 
+ if (withClock) {
+  clock2 = clock();
+  tContact = tContact+((double)(clock2-clock1))/CLOCKS_PER_SEC;
+  clock1=clock2;
+}
 
-    memcpy(eta,etaNew,sizeof(eta));
-    for (site = 0; site < N*N; site++) {
-      etaNew[site] = 0;
-      if (rnd() < epsilon && eta[site] == 1)
-	killCluster(site);
-    }
+memcpy(eta,etaNew,sizeof(eta));
+for (site = 0; site < N*N; site++) {
+  etaNew[site] = 0;
+  if (rnd() < epsilon && eta[site] == 1)
+   killCluster(site);
+}
 
-    if (withClock) {
-      clock2 = clock();
-      tEpidemic = tEpidemic+((double)(clock2-clock1))/CLOCKS_PER_SEC;
-      clock1=clock2;
-    }
+if (withClock) {
+  clock2 = clock();
+  tEpidemic = tEpidemic+((double)(clock2-clock1))/CLOCKS_PER_SEC;
+  clock1=clock2;
+}
 
-    runtime++;
+runtime++;
 
-    if (display3 == P3) {
-      fprintf (ofp,"%f,%f\n",runtime,((float)ones)/((float)N*N));
-      display3 = 0;
-    }
+if (display3 == P3) {
+  fprintf (ofp,"%f,%f\n",runtime,((float)ones)/((float)N*N));
+  display3 = 0;
+}
 
-    if (display == P) {
-    
-      display = 0 ;
-      
-      for (site = 0; site < N*N; site++) {
-
-	x = site%N ; 
-	y = site/N;
-
-	for (a = 0 ; a < square; a++) {
-	  for (b = 0; b < square; b++) {
-	    switch (eta[site]) {
-	      case 0:
-		config[3*((square*x+a)+square*(square*y+b)*N)+0] = 255;
-		config[3*((square*x+a)+square*(square*y+b)*N)+1] = 255;
-		config[3*((square*x+a)+square*(square*y+b)*N)+2] = 255;
-		break;
-	      case 1:
-		config[3*((square*x+a)+square*(square*y+b)*N)+0] = 0;
-		config[3*((square*x+a)+square*(square*y+b)*N)+1] = 180;
-	        config[3*((square*x+a)+square*(square*y+b)*N)+2] = 0;
-	      	break;
-	    }
-	  }
-	}
-      }
-		
-      display2++;
-      if (display2 == P2) {
-	if (withClock)
-	  printf("1's = %f     runtime = %f\ntContact = %f     tEpidemic = %f\n\n",((float)ones)/((float)N*N),runtime,tContact,tEpidemic) ;
-	else
-	  printf("1's = %f     runtime = %f\n",((float)ones)/((float)N*N),runtime) ;	
-	display2 = 0;
-      }
-
-      draw_config();
-      while (gtk_events_pending ()) gtk_main_iteration ();
-      
-    }
-    
-  }
+if (display == P) {
   
+  display = 0 ;
+  
+  for (site = 0; site < N*N; site++) {
+
+   x = site%N ; 
+   y = site/N;
+
+   for (a = 0 ; a < square; a++) {
+     for (b = 0; b < square; b++) {
+       switch (eta[site]) {
+         case 0:
+         config[3*((square*x+a)+square*(square*y+b)*N)+0] = 255;
+         config[3*((square*x+a)+square*(square*y+b)*N)+1] = 255;
+         config[3*((square*x+a)+square*(square*y+b)*N)+2] = 255;
+         break;
+         case 1:
+         config[3*((square*x+a)+square*(square*y+b)*N)+0] = 0;
+         config[3*((square*x+a)+square*(square*y+b)*N)+1] = 180;
+         config[3*((square*x+a)+square*(square*y+b)*N)+2] = 0;
+         break;
+       }
+     }
+   }
+ }
+ 
+ display2++;
+ if (display2 == P2) {
+   if (withClock)
+     printf("1's = %f     runtime = %f\ntContact = %f     tEpidemic = %f\n\n",((float)ones)/((float)N*N),runtime,tContact,tEpidemic) ;
+   else
+     printf("1's = %f     runtime = %f\n",((float)ones)/((float)N*N),runtime) ;	
+   display2 = 0;
+ }
+
+ draw_config();
+ while (gtk_events_pending ()) gtk_main_iteration ();
+ 
+}
+
+}
+
 }
 
 
 void GO(GtkWidget *widg, GdkEventButton *ev) {
 
   ofp = fopen(ofile, "w");
-  	
+  
   STAR = TRUE;
   DRAW = TRUE;
   runtime = 0;
