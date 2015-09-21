@@ -14,6 +14,7 @@ public class Main {
 			int[] arr = new int[N];
 			for(int i =0; i<N;i++){
 				arr[i] = s.nextInt();
+				resolve(arr);
 			}
 		}
 	}
@@ -21,8 +22,11 @@ public class Main {
 	static public void resolve(int[] arr){
 		int maxContiguous = arr[0];
 		int maxNonContiguous = arr[0];
-		for(int i = 0; i<arr.lenght; i++){
-			
+		int currNonContSum = arr[0];
+		for(int i = 0; i<arr.length; i++){
+			if(arr[i] > maxNonContiguous){
+				maxNonContiguous = arr[i];
+			}
 		}
 	}
 }
