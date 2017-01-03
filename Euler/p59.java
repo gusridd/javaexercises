@@ -50,7 +50,7 @@ public class p59 {
 
   static public int sum(ArrayList<Integer> list, char a, char b, char c){
     int sum = 0;
-    for(int i = 0; i < list.size()-2; i++){
+    for(int i = 0; i < list.size()-2; i = i + 2){
       char t = (char)((char)Character.toChars(list.get(i))[0] ^ (char)a);
       char h = (char)((char)Character.toChars(list.get(i+1))[0] ^ (char)b);
       char e = (char)((char)Character.toChars(list.get(i+2))[0] ^ (char)c);
